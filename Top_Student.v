@@ -365,7 +365,6 @@ module Top_Student (
     Game game(CLK, x, y, btnR, 1'b0, volume,  game_oled_data);
 
     assign oled_data = SW[1] ? game_oled_data : volume_oled_data;
-    assign oled_data = volume_oled_data;
 
 endmodule
 
