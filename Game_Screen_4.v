@@ -1,7 +1,7 @@
 module Game_Screen_4(
   input [6:0] x,
   input [5:0] y,
-  output reg [15:0] oled_data
+  output [15:0] oled_data
 );
 
 //Define constant as local parameter
