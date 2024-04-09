@@ -35,5 +35,10 @@ localparam SKYBLUE = 16'h5FFF;
                          
               ((x == 73) && (y == 6)) || ((x >= 74 && x <= 75) && (y >= 5 && y <= 9)) || ((x == 73) && (y == 9)) || ((x == 76) && (y == 9));
 
+    always @ (*) begin
+      oled_data = RED;
+    end
+
 endmodule
+
 

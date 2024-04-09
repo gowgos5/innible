@@ -154,4 +154,8 @@ localparam SKYBLUE = 16'h5FFF;
                 ((xrange_c8) && (yrange_r15)) || ((xrange_c9) && (yrange_r15)) || ((xrange_c10) && (yrange_r15)) || ((xrange_c11) && (yrange_r15)) ||
                 ((xrange_c12) && (yrange_r15)) || ((xrange_c13) && (yrange_r15)) || ((xrange_c14) && (yrange_r15)) || ((xrange_c15) && (yrange_r15));     
 
+always @ (*) begin
+  oled_data = WHITE;
+end
+
 endmodule

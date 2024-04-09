@@ -43,4 +43,8 @@ localparam SKYBLUE = 16'h5FFF;
   
     wire BROWN_CHAIR = xrange_bar1 && yrange_stick1 || xrange_bar2 && yrange_stick2 || xrange_bar3 && y == 45 || x == 41 && yrange_stick3 || x == 56 && yrange_stick4 || x == 37 && yrange_stick5 || x == 60 && yrange_stick6;
 
+always @ (*) begin
+  oled_data = MAGENTA;
+end
+
 endmodule
