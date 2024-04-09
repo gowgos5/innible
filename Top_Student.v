@@ -18,7 +18,7 @@ module Top_Student (
     //Common input
     input CLK, //100Mhz clock signal
     //input for 4.1A: setting up the microphone
-    input SW,
+    input [1:0] SW,
     input btnR,
     input btnC,
     input btnL,
@@ -94,7 +94,7 @@ module Top_Student (
     //When SW is OFF (0): The 12-bitmic_in IS represented on LEDs that updates at a clock speed of 20KHZ
     wire CLK_SW;
     
-    assign CLK_SW = SW ? CLK_10HZ : CLK_20KHZ;
+    assign CLK_SW = SW[0] ? CLK_10HZ : CLK_20KHZ;
     
     //instantiate the Audio_Capture.v module in Top_Student.v
     Audio_Capture uo (CLK, CLK_SW, J_MIC3_Pin3, J_MIC3_Pin1, J_MIC3_Pin4, sample);
@@ -364,7 +364,7 @@ module Top_Student (
     Volume_Screen v0(x, y, VOLUME_SW[2:1], VOLUME_SW[8:3], volume, volume_oled_data);
     Game game(CLK, x, y, btnR, 1'b0, volume,  game_oled_data);
 
-    // assign oled_data = SW[10] ? game_oled_data : volume_oled_data;
+    assign oled_data = SW[1] ? game_oled_data : volume_oled_data;
     assign oled_data = volume_oled_data;
 
 endmodule
