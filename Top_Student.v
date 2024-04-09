@@ -18,7 +18,10 @@ module Top_Student (
     //Common input
     input CLK, //100Mhz clock signal
     //input for 4.1A: setting up the microphone
-    input SW, 
+    input SW,
+    input btnR,
+    input btnC,
+    input btnL,
     input J_MIC3_Pin3,   // Connect from this signal to Audio_Capture.v
     //input for 4.2B: Design volume bar
     input [8:1] VOLUME_SW,
@@ -359,7 +362,7 @@ module Top_Student (
     assign y [5:0] = pixel_index / 96; //2^5 = 32; 2^0 = 1
     
     Volume_Screen v0(x, y, VOLUME_SW[2:1], VOLUME_SW[8:3], volume, volume_oled_data);
-    // Game game(x, y, game_oled_data);
+    Game game(CLK, x, y, btnR, 1'b0, volume,  game_oled_data);
 
     // assign oled_data = SW[10] ? game_oled_data : volume_oled_data;
     assign oled_data = volume_oled_data;
