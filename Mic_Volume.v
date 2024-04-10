@@ -21,44 +21,6 @@ localparam MAGENTA = 16'hF81F;
 localparam BROWN = 16'h8204;
 localparam YELLOW = 16'hFC00;    
 
-//96 x 64 bit display screen
-//Length (X): 0 - 95; width (Y): 0 - 63
-//The coordinates of the corner points of the green border:
-//Bottom left corner: x = 1, y = 1
-//Top left corner: x = 1, y = 62
-//Bottom right corner: x = 94, y = 1
-//Top right corner: x = 94, y = 62
-//Colour the vertical border green
-wire green_left_border = (x == 1) && (y >= 1 && y <= 62); 
-wire green_right_border = (x == 94) && (y >= 1 && y <= 62); 
-//Colour the horizontal border green
-wire green_top_border = (x >= 1 && x <= 94) && (y == 62); 
-wire green_bottom_border = (x >= 1 && x <= 94) && (y == 1);
-
-//The coordinates of the corner points of the orange border:
-//Bottom left corner: x = 3, y = 3
-//Top left corner: x = 3, y = 60
-//Bottom right corner: x = 92, y = 3
-//Top right corner: x = 92, y = 60
-//Colour the vertical border orange
-wire orange_left_border = (x == 3) && (y >= 3 && y <= 60);
-wire orange_right_border = (x == 92) && (y >= 3 && y <= 60);
-//Colour the horizontal border orange
-wire orange_top_border = (x >= 3 && x <= 92) && (y == 60);
-wire orange_bottom_border = (x >= 3 && x <= 92) && (y == 3);
-
-//The coordinates of the corner points of the red border:
-//Bottom left corner: x = 5, y = 5
-//Top left corner: x = 5, y = 58
-//Bottom right corner: x = 90, y = 5
-//Top right corner: x = 90, y = 58
-//Colour the vertical border red
-wire red_left_border = (x == 5) && (y >= 5 && y <= 58);
-wire red_right_border = (x == 90) && (y >= 5 && y <= 58);
-//Colour the horizontal border red
-wire red_top_border = (x >= 5 && x <= 90) && (y == 58);
-wire red_bottom_border = (x >= 5 && x <= 90) && (y == 5);
-
 //Each bar has a length of 60 pixels
 //(96 - 60) / 2 = 18
 //Minimum point = 18 - 00 = 18 (LHS of x-axis)
@@ -120,40 +82,31 @@ always @ (*) begin
            end
   endcase
   oled_data = black;
-  if (green_left_border || green_right_border || green_top_border || green_bottom_border) begin
+  if (active_bars[0] && green_top_bar) begin
     oled_data = green;
   end 
-  else if (orange_left_border || orange_right_border || orange_top_border || orange_bottom_border) begin
+  else if (active_bars[5] && green_bottom_bar) begin
+    oled_data = green;
+  end 
+  else if ( active_bars[1] && orange_top_bar) begin
     oled_data = orange;
   end 
-  else if (red_left_border || red_right_border || red_top_border || red_bottom_border) begin
+  else if (active_bars[4] && orange_bottom_bar) begin
+    oled_data = orange;
+  end 
+  else if (active_bars[2] && red_top_bar) begin
     oled_data = red;
   end 
-  else if (green_top_bar) begin
-    oled_data = green;
-  end 
-  else if (green_bottom_bar) begin
-    oled_data = green;
-  end 
-  else if (orange_top_bar) begin
-    oled_data = orange;
-  end 
-  else if (orange_bottom_bar) begin
-    oled_data = orange;
-  end 
-  else if (red_top_bar) begin
-    oled_data = red;
-  end 
-  else if (red_bottom_bar) begin
+  else if (active_bars[3] && red_bottom_bar) begin
     oled_data = red;  
   end 
-  else if (green_top_bar || green_bottom_bar) begin
+  else if (active_bars[6] && (green_top_bar || green_bottom_bar)) begin
     oled_data = green;
   end 
-  else if (orange_top_bar || orange_bottom_bar) begin
+  else if (active_bars[6] && (orange_top_bar || orange_bottom_bar)) begin
     oled_data = orange;
   end 
-  else if (red_top_bar || red_bottom_bar) begin
+  else if (active_bars[6] && (red_top_bar || red_bottom_bar)) begin
     oled_data = red;
   end 
 end

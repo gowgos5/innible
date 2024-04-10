@@ -32,8 +32,10 @@ localparam VOLUME_MIN_THRESHOLD = 3;
 localparam OLED_BLANK = 16'h0000;
 
 wire clk_1hz;
+wire clk_0p5hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_0p5_hz(clk, clk_0p5hz);
 
 reg btnR_pulse [2:0];
 reg settings_use_btnR;
@@ -48,6 +50,11 @@ always @ (posedge clk) begin
 
   case (state)
     SETTINGS: settings_use_btnR <= btnR;
+  endcase
+end
+
+always @ (posedge clk_0p5hz) begin
+  case (state)
     RECORD_START: begin
                  for (i = 0; i < 16; i = i + 1) begin
                    record_volume[i] <= 5'd0;
@@ -122,7 +129,7 @@ always @ (*) begin
     CONTROLS_1: if (btnR_pulse[2]) next_state = CONTROLS_2;
     CONTROLS_2: if (btnR_pulse[2]) next_state = SETTINGS;
     SETTINGS: if (btnL || btnR_pulse[2]) next_state = MIC_START;
-    MIC_START: if (volume > VOLUME_MIN_THRESHOLD) next_state = MIC_VOLUME; // TODO countdown?
+    MIC_START: if (btnR_pulse[2]) next_state = MIC_VOLUME;
     MIC_VOLUME: if (btnR) next_state = RECORD_START;
     RECORD_START: if (btnC) next_state = RECORD_SPEAK;
     RECORD_SPEAK: if (~btnC) next_state = GAME_START;
