@@ -111,7 +111,7 @@ always @ (posedge clk_100hz) begin
                 end
     GAME_PLAY: begin
                  if (game_play_active) game_play_active_cnt <= game_play_active_cnt - 9'd1;
-                 else game_play_timeout_cnt <= game_play_timeout_cnt - 9'd1;
+                 else if (!game_play_timeout) game_play_timeout_cnt <= game_play_timeout_cnt - 9'd1;
                end
   endcase
 end
@@ -147,7 +147,7 @@ Record_Start record_start(x, y, record_start_oled_data);
 Record_Speak record_speak(x, y, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
 Game_Play game_play(clk_20hz, x, y, game_play_active, game_play_oled_data);
-Game_End_1 game_end_1(x, y, game_end_1_oled_data);
+Game_End_1 game_end_1(x, y, game_play_score_cnt, game_end_1_oled_data);
 Game_End_2 game_end_2(x, y, game_end_2_oled_data);
 Game_End_3 game_end_3(x, y, game_end_3_oled_data);
 
