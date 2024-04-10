@@ -27,20 +27,46 @@ localparam GAME_END_2 = 4'b1101;
 localparam GAME_END_3 = 4'b1110;
 localparam GAME_REPLAY = 4'b1111;
 
-localparam VOLUME_MIN_THRESHOLD = 3; 
-
 localparam OLED_BLANK = 16'h0000;
 
+localparam GAME_PLAY_TIMEOUT_CNT = 9'd300;
+
 wire clk_1hz;
-wire clk_0p5hz;
+wire clk_2hz;
+wire clk_10hz;
+wire clk_100hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
-Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_0p5_hz(clk, clk_0p5hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_2_hz(clk, clk_2hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(10)) slow_clock_10_hz(clk, clk_10hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
 
 reg btnR_pulse [2:0];
+
 reg settings_use_btnR;
+
+reg [8:0] record_cnt;
 reg [4:0] record_volume [15:0]; 
+reg [8:0] record_total_volume; 
+
+wire lfsr_init;
+wire [8:0] lfsr_seed;
+wire [8:0] lfsr_out;
+reg [8:0] lfsr_cnt = 9'd0;
+
 reg [2:0] game_start_cnt;
+reg [8:0] game_play_active_cnt;
+reg [8:0] game_play_timeout_cnt;
+wire game_play_active;
+wire game_play_timeout;
+
+assign lfsr_init = (next_state == GAME_START);
+assign lfsr_seed = lfsr_cnt ^ record_total_volume;
+
+LFSR lfsr(clk, lfsr_init, lfsr_seed, lfsr_out);
+
+assign game_play_active = |game_play_active_cnt;
+assign game_play_timeout = |game_play_timeout_cnt;
 
 integer i;
 always @ (posedge clk) begin
@@ -53,18 +79,35 @@ always @ (posedge clk) begin
   endcase
 end
 
-always @ (posedge clk_0p5hz) begin
+always @ (posedge clk_2hz) begin
   case (state)
     RECORD_START: begin
+                 record_cnt <= 9'd0;
                  for (i = 0; i < 16; i = i + 1) begin
                    record_volume[i] <= 5'd0;
                  end
                end
     RECORD_SPEAK: begin
+                 record_cnt <= record_cnt + 9'd1;
                  record_volume[i] <= volume;
                  for (i = 1; i < 16; i = i + 1) begin
                    record_volume[i] <= record_volume[i-1];
                  end
+               end
+  endcase
+end
+
+always @ (posedge clk_100hz) begin
+  lfsr_cnt <= lfsr_cnt + 9'd1;
+
+  case (state)
+    GAME_START: begin
+                  game_play_active_cnt <= lfsr_out < 9'd100 ? lfsr_out + 9'd100 : lfsr_out;
+                  game_play_timeout_cnt <= GAME_PLAY_TIMEOUT_CNT;
+                end
+    GAME_PLAY: begin
+                 if (game_play_active) game_play_active_cnt <= game_play_active_cnt - 9'd1;
+                 else game_play_timeout_cnt <= game_play_timeout_cnt - 9'd1;
                end
   endcase
 end
@@ -86,6 +129,9 @@ wire [15:0] record_start_oled_data;
 wire [15:0] record_speak_oled_data;
 wire [15:0] game_start_oled_data;
 wire [15:0] game_play_oled_data;
+wire [15:0] game_end_1_oled_data;
+wire [15:0] game_end_2_oled_data;
+wire [15:0] game_end_3_oled_data;
 
 Title title(x, y, title_oled_data);
 Controls_1 controls_1(x, y, controls_1_oled_data);
@@ -96,7 +142,10 @@ Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
 Record_Speak record_speak(x, y, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
-Game_Play game_play(x, y, game_play_oled_data);
+Game_Play game_play(clk_10hz, x, y, game_play_active, game_play_oled_data);
+Game_End_1 game_end_1(x, y, game_end_1_oled_data);
+Game_End_2 game_end_2(x, y, game_end_2_oled_data);
+Game_End_3 game_end_3(x, y, game_end_3_oled_data);
 
 always @ (*) begin
   oled_data = OLED_BLANK;
@@ -111,6 +160,9 @@ always @ (*) begin
     RECORD_SPEAK: oled_data = record_speak_oled_data;
     GAME_START: oled_data = game_start_oled_data;
     GAME_PLAY: oled_data = game_play_oled_data;
+    GAME_END_1: oled_data = game_end_1_oled_data;
+    GAME_END_2: oled_data = game_end_2_oled_data;
+    GAME_END_3: oled_data = game_end_3_oled_data;
   endcase
 end
 
@@ -130,13 +182,22 @@ always @ (*) begin
     CONTROLS_2: if (btnR_pulse[2]) next_state = SETTINGS;
     SETTINGS: if (btnL || btnR_pulse[2]) next_state = MIC_START;
     MIC_START: if (btnR_pulse[2]) next_state = MIC_VOLUME;
-    MIC_VOLUME: if (btnR) next_state = RECORD_START;
+    MIC_VOLUME: if (btnR_pulse[2]) next_state = RECORD_START;
     RECORD_START: if (btnC) next_state = RECORD_SPEAK;
     RECORD_SPEAK: if (~btnC) next_state = GAME_START;
     GAME_START: if (game_start_cnt > 3'd4) next_state = GAME_PLAY;
+    GAME_PLAY: begin
+                 if (game_play_timeout) next_state = GAME_END_3;
+                 else if (btnR_pulse[2]) next_state = game_play_active ? GAME_END_1 : GAME_END_2; // TODO
+                end
   endcase
   if (~sw) begin
     next_state = IDLE;
+  end
+
+  record_total_volume = 9'd0;
+  for (i = 0; i < 16; i = i + 1) begin
+    record_total_volume = record_total_volume + record_volume[i];
   end
 end
 

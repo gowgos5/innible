@@ -1,6 +1,8 @@
 module Game_Play(
+  input clk,
   input [6:0] x,
   input [5:0] y,
+  input active,
   output reg [15:0] oled_data
 );
 
@@ -43,13 +45,13 @@ localparam SKYBLUE = 16'h5FFF;
   
     wire BROWN_CHAIR = xrange_bar1 && yrange_stick1 || xrange_bar2 && yrange_stick2 || xrange_bar3 && y == 45 || x == 41 && yrange_stick3 || x == 56 && yrange_stick4 || x == 37 && yrange_stick5 || x == 60 && yrange_stick6;
 
-    always @ (*) begin
-    oled_data = WHITE;
+    always @ (clk) begin
+    oled_data <= (oled_data == WHITE && active) ? CYAN : WHITE;
         if (CHAIR) begin
-            oled_data = BLACK;
+            oled_data <= BLACK;
         end
         if (BROWN_CHAIR) begin
-            oled_data = BROWN;
+            oled_data <= BROWN;
         end
     end 
 
