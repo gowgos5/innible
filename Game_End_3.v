@@ -1,4 +1,4 @@
-module Game_Screen_13(
+module Game_End_3(
   input [6:0] x,
   input [5:0] y,
   output reg [15:0] oled_data

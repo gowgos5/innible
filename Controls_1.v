@@ -1,4 +1,4 @@
-module Game_Screen_2(
+module Controls_1(
   input [6:0] x,
   input [5:0] y,
   output reg [15:0] oled_data

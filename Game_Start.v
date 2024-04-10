@@ -1,6 +1,7 @@
-module Game_Screen_8(
+module Game_Start(
   input [6:0] x,
   input [5:0] y,
+  input [2:0] cnt,
   output reg [15:0] oled_data
 );
 
@@ -37,10 +38,10 @@ localparam LIGHTGREEN = 16'hAFE5;
     wire LOADING_BAR_OB = ((x >= 10 && x <= 12) && (y >= 29 && y <= 46)) || ((x >= 87 && x <= 89) && (y >= 29 && y <= 46)) ||
                           ((x >= 13 && x <= 86) && (y >= 26 && y <= 28)) || ((x >= 13 && x <= 86) && (y >= 47 && y <= 49));
                           
-    wire LOADING_BAR = ((x >= 14 && x <= 30) && (y >= 30 && y <= 45)) ||
-                       ((x >= 32 && x <= 49) && (y >= 30 && y <= 45)) ||
-                       ((x >= 51 && x <= 67) && (y >= 30 && y <= 45)) ||
-                       ((x >= 69 && x <= 85) && (y >= 30 && y <= 45));
+    wire LOADING_BAR_1 = (x >= 14 && x <= 30) && (y >= 30 && y <= 45);
+    wire LOADING_BAR_2 = (x >= 32 && x <= 49) && (y >= 30 && y <= 45);
+    wire LOADING_BAR_3 = (x >= 51 && x <= 67) && (y >= 30 && y <= 45);
+    wire LOADING_BAR_4 = (x >= 69 && x <= 85) && (y >= 30 && y <= 45);
     
     wire rule =  ((x >= 12 && x <= 13) && (y == 51)) || ((x >= 10 && x <= 11) && (y >= 51 && y <= 55)) || ((x >= 12 && x <= 13) && (y == 55)) || ((x == 13) && (y >= 53 && y <= 55)) ||
                  ((x >= 15 && x <= 16) && (y >= 51 && y <= 55)) || ((x == 17) && (y == 51)) || ((x == 17 ) && (y == 53)) || ((x == 18) && (y >= 51 && y <= 52)) || ((x == 18) && (y >= 54 && y <= 55)) ||
@@ -83,7 +84,7 @@ localparam LIGHTGREEN = 16'hAFE5;
         if (LOADING_GAME || LOADING_BAR_OB) begin
             oled_data = BLACK;
         end
-        else if (LOADING_BAR) begin
+        else if ((LOADING_BAR_1 && cnt == 3'd1) || (LOADING_BAR_2 && cnt == 3'd2) || (LOADING_BAR_3 && cnt == 3'd3) || (LOADING_BAR_4 && cnt == 3'd4)) begin
             oled_data = LIGHTGREEN; 
         end
         else if (rule) begin

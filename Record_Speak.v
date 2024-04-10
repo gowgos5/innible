@@ -1,6 +1,7 @@
-module Game_Screen_7(
+module Record_Speak(
   input [6:0] x,
   input [5:0] y,
+  input [4:0] volume [15:0],
   output reg [15:0] oled_data
 );
 
