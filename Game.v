@@ -46,8 +46,8 @@ always @ (*) begin
     SCREEN_8: if (btnR) next_state = SCREEN_9;
     SCREEN_9: if (btnR) next_state = SCREEN_10;
     SCREEN_10: if (btnR) next_state = SCREEN_11;
-    SCREEN_11: if (btnR) next_state = SCREEN_11;
-    SCREEN_12: if (btnR) next_state = SCREEN_12;
+    SCREEN_11: if (btnR) next_state = SCREEN_12;
+    SCREEN_12: if (btnR) next_state = SCREEN_13;
     SCREEN_13: if (btnR) next_state = SCREEN_1;
   endcase
   if (~sw) begin
