@@ -362,7 +362,7 @@ module Top_Student (
     assign y [5:0] = pixel_index / 96; //2^5 = 32; 2^0 = 1
     
     Volume_Screen v0(x, y, VOLUME_SW[2:1], VOLUME_SW[8:3], volume, volume_oled_data);
-    Game game(CLK, x, y, btnR, SW{1], volume,  game_oled_data);
+    Game game(CLK, x, y, btnR, SW[1], volume,  game_oled_data);
 
     assign oled_data = SW[1] ? game_oled_data : volume_oled_data;
 
