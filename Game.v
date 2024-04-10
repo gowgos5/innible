@@ -66,7 +66,7 @@ assign lfsr_seed = lfsr_cnt ^ record_total_volume;
 LFSR lfsr(clk, lfsr_init, lfsr_seed, lfsr_out);
 
 assign game_play_active = |game_play_active_cnt;
-assign game_play_timeout = |game_play_timeout_cnt;
+assign game_play_timeout = !(|game_play_timeout_cnt);
 
 integer i;
 always @ (posedge clk) begin

@@ -34,7 +34,6 @@ localparam SKYBLUE = 16'h5FFF;
     wire yrange_stick5 = (y >= 40 && y <= 56);
     wire yrange_stick6 = (y >= 40 && y <= 56);
 
-
     wire CHAIR = xrange_bar1 && (y >= 11 && y <= 12) || xrange_bar1 && (y >= 21 && y <= 22) || ((x >= 33 && x <= 34) && yrange_stick1) || ((x >= 64 && x <= 65) && yrange_stick1) || 
                  xrange_bar2 && (y >= 35 && y <= 36) || xrange_bar2 && (y >= 39 && y <= 40) || ((x >= 28 && x <= 29) && yrange_stick2) || ((x >= 68 && x <= 69) && yrange_stick2) || 
                  xrange_bar3 && (y >= 43 && y <= 44) || xrange_bar3 && (y >= 46 && y <= 47) || 
@@ -48,7 +47,7 @@ localparam SKYBLUE = 16'h5FFF;
     wire BROWN_CHAIR = xrange_bar1 && yrange_stick1 || xrange_bar2 && yrange_stick2 || xrange_bar3 && y == 45 || x == 41 && yrange_stick3 || x == 56 && yrange_stick4 || x == 37 && yrange_stick5 || x == 60 && yrange_stick6;
 
     always @ (*) begin
-    oled_data = WHITE;
+    oled_data = oled_background_data;
         if (CHAIR) begin
             oled_data = BLACK;
         end
