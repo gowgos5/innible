@@ -20,8 +20,8 @@ localparam SCREEN_8 = 4'b1000;
 localparam SCREEN_9 = 4'b1001;
 localparam SCREEN_10 = 4'b1010;
 localparam SCREEN_11 = 4'b1011;
-localparam SCREEN_12 = 4'b1011;
-localparam SCREEN_13 = 4'b1011;
+localparam SCREEN_12 = 4'b1100;
+localparam SCREEN_13 = 4'b1101;
 
 localparam BLACK = 16'h0000;
 
