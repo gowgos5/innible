@@ -6,6 +6,8 @@ module Game_Play(
   output reg [15:0] oled_data
 );
 
+reg [15:0] oled_background_data;
+
 //Define constant as local parameter
 //Colour display
 localparam GREEN = 16'h07E0;
@@ -45,14 +47,18 @@ localparam SKYBLUE = 16'h5FFF;
   
     wire BROWN_CHAIR = xrange_bar1 && yrange_stick1 || xrange_bar2 && yrange_stick2 || xrange_bar3 && y == 45 || x == 41 && yrange_stick3 || x == 56 && yrange_stick4 || x == 37 && yrange_stick5 || x == 60 && yrange_stick6;
 
-    always @ (clk) begin
-    oled_data <= (oled_data == WHITE && active) ? CYAN : WHITE;
+    always @ (*) begin
+    oled_data = WHITE;
         if (CHAIR) begin
-            oled_data <= BLACK;
+            oled_data = BLACK;
         end
         if (BROWN_CHAIR) begin
-            oled_data <= BROWN;
+            oled_data = BROWN;
         end
     end 
+
+    always @ (posedge clk) begin
+      oled_background_data <= (oled_background_data == WHITE && active) ? CYAN : WHITE;
+    end
 
 endmodule
