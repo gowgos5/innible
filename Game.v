@@ -34,13 +34,13 @@ localparam GAME_PLAY_TIMEOUT_CNT = 9'd300;
 wire clk_1hz;
 wire clk_2hz;
 wire clk_10hz;
-wire clk_50hz;
+wire clk_30hz;
 wire clk_100hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_2_hz(clk, clk_2hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(10)) slow_clock_10_hz(clk, clk_10hz);
-Slow_Clock #(.SLOW_CLOCK_FREQUENCY(50)) slow_clock_50_hz(clk, clk_50hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(30)) slow_clock_30_hz(clk, clk_30hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
 
 reg btnR_pulse [2:0];
@@ -61,6 +61,7 @@ reg [8:0] game_play_active_cnt;
 reg [8:0] game_play_timeout_cnt;
 wire game_play_active;
 wire game_play_timeout;
+wire [8:0] game_play_score_cnt;
 
 assign lfsr_init = (next_state == GAME_START);
 assign lfsr_seed = lfsr_cnt ^ record_total_volume;
@@ -69,6 +70,7 @@ LFSR lfsr(clk, lfsr_init, lfsr_seed, lfsr_out);
 
 assign game_play_active = |game_play_active_cnt;
 assign game_play_timeout = !(|game_play_timeout_cnt);
+assign game_play_score_cnt = GAME_PLAY_TIMEOUT_CNT - game_play_timeout_cnt;
 
 integer i;
 always @ (posedge clk) begin
@@ -144,7 +146,7 @@ Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
 Record_Speak record_speak(x, y, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
-Game_Play game_play(clk_50hz, x, y, game_play_active, game_play_oled_data);
+Game_Play game_play(clk_30hz, x, y, game_play_active, game_play_oled_data);
 Game_End_1 game_end_1(x, y, game_end_1_oled_data);
 Game_End_2 game_end_2(x, y, game_end_2_oled_data);
 Game_End_3 game_end_3(x, y, game_end_3_oled_data);
@@ -190,7 +192,7 @@ always @ (*) begin
     GAME_START: if (game_start_cnt > 3'd4) next_state = GAME_PLAY;
     GAME_PLAY: begin
                  if (game_play_timeout) next_state = GAME_END_3;
-                 else if (btnL) next_state = game_play_active ? GAME_END_1 : GAME_END_2; // TODO
+                 else if (btnL) next_state = game_play_active ? GAME_END_2 : GAME_END_1; // TODO
                end
   endcase
   if (~sw) begin
