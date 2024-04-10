@@ -57,6 +57,7 @@ wire [8:0] lfsr_out;
 reg [8:0] lfsr_cnt = 9'd0;
 
 reg [2:0] game_start_cnt;
+
 reg [8:0] game_play_active_cnt;
 reg [8:0] game_play_timeout_cnt;
 wire game_play_active;
@@ -192,7 +193,7 @@ always @ (*) begin
     GAME_START: if (game_start_cnt > 3'd4) next_state = GAME_PLAY;
     GAME_PLAY: begin
                  if (game_play_timeout) next_state = GAME_END_3;
-                 else if (btnL) next_state = game_play_active ? GAME_END_2 : GAME_END_1; // TODO
+                 else if ((btnR && settings_use_btnR) || (btnL && !settings_use_btnR)) next_state = game_play_active ? GAME_END_2 : GAME_END_1; // TODO
                end
   endcase
   if (~sw) begin
