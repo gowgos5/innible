@@ -190,7 +190,7 @@ always @ (*) begin
     GAME_START: if (game_start_cnt > 3'd4) next_state = GAME_PLAY;
     GAME_PLAY: begin
                  if (game_play_timeout) next_state = GAME_END_3;
-                 else if (btnL[2]) next_state = game_play_active ? GAME_END_1 : GAME_END_2; // TODO
+                 else if (btnL) next_state = game_play_active ? GAME_END_1 : GAME_END_2; // TODO
                end
   endcase
   if (~sw) begin
