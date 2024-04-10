@@ -34,13 +34,13 @@ localparam GAME_PLAY_TIMEOUT_CNT = 9'd300;
 wire clk_1hz;
 wire clk_2hz;
 wire clk_10hz;
-wire clk_30hz;
+wire clk_20hz;
 wire clk_100hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_2_hz(clk, clk_2hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(10)) slow_clock_10_hz(clk, clk_10hz);
-Slow_Clock #(.SLOW_CLOCK_FREQUENCY(30)) slow_clock_30_hz(clk, clk_30hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(20)) slow_clock_30_hz(clk, clk_20hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
 
 reg btnR_pulse [2:0];
@@ -146,8 +146,8 @@ Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
 Record_Speak record_speak(x, y, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
-Game_Play game_play(clk_30hz, x, y, game_play_active, game_play_oled_data);
-Game_End_1 game_end_1(x, y, game_end_1_oled_data);
+Game_Play game_play(clk_20hz, x, y, game_play_active, game_play_oled_data);
+Game_End_1 game_end_1(x, y, game_play_score_cnt, game_end_1_oled_data);
 Game_End_2 game_end_2(x, y, game_end_2_oled_data);
 Game_End_3 game_end_3(x, y, game_end_3_oled_data);
 
