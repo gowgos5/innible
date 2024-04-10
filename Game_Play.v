@@ -57,7 +57,10 @@ localparam SKYBLUE = 16'h5FFF;
     end 
 
     always @ (posedge clk) begin
-      oled_background_data <= (oled_background_data == WHITE && active) ? CYAN : WHITE;
+      oled_background_data <= WHITE;
+      if (active) begin
+        oled_background_data <= (oled_background_data == MAGENTA) ? CYAN : MAGENTA;;
+      end
     end
 
 endmodule
