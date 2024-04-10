@@ -50,7 +50,6 @@ always @ (*) begin
     SCREEN_12: if (btnR) next_state = SCREEN_12;
     SCREEN_13: if (btnR) next_state = SCREEN_1;
   endcase
-  endcase
   if (~sw) begin
     next_state = IDLE;
   end
