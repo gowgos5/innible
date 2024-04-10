@@ -154,8 +154,34 @@ localparam SKYBLUE = 16'h5FFF;
                 ((xrange_c8) && (yrange_r15)) || ((xrange_c9) && (yrange_r15)) || ((xrange_c10) && (yrange_r15)) || ((xrange_c11) && (yrange_r15)) ||
                 ((xrange_c12) && (yrange_r15)) || ((xrange_c13) && (yrange_r15)) || ((xrange_c14) && (yrange_r15)) || ((xrange_c15) && (yrange_r15));     
 
-always @ (*) begin
-  oled_data = WHITE;
-end
-
+    always @ (*) begin
+    oled_data = WHITE;
+        if (SPEAK || AND || RELEASE) begin
+            oled_data = BLACK;
+        end
+        else if (row0 || row1) begin
+            oled_data = BROWN;
+        end
+        else if (row2 || row3) begin
+            oled_data = RED;
+        end
+        else if (row4 || row5) begin
+            oled_data = YELLOW;
+        end
+        else if (row6 || row7) begin
+            oled_data = ORANGE;
+        end
+        else if (row8 || row9) begin
+            oled_data = GREEN;
+        end
+        else if (row10 || row11) begin
+            oled_data = SKYBLUE;
+        end
+        else if (row12 || row13) begin
+            oled_data = BLUE;
+        end
+        else if (row14 || row15) begin
+            oled_data = PURPLE;
+        end       
+    end  
 endmodule

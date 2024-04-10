@@ -8,18 +8,20 @@ module Game(
   output reg [15:0] oled_data
 );
 
-localparam IDLE = 4'b0000; 
-localparam SCREEN_1 = 4'b0001; 
-localparam SCREEN_2 = 4'b0010; 
-localparam SCREEN_3 = 4'b0011; 
-localparam SCREEN_4 = 4'b0100; 
-localparam SCREEN_5 = 4'b0101; 
-localparam SCREEN_6 = 4'b0110; 
-localparam SCREEN_7 = 4'b0111; 
-localparam SCREEN_8 = 4'b1000; 
-localparam SCREEN_9 = 4'b1001; 
-localparam SCREEN_10 = 4'b1010; 
-localparam SCREEN_11 = 4'b1011; 
+localparam IDLE = 4'b0000;
+localparam SCREEN_1 = 4'b0001;
+localparam SCREEN_2 = 4'b0010;
+localparam SCREEN_3 = 4'b0011;
+localparam SCREEN_4 = 4'b0100;
+localparam SCREEN_5 = 4'b0101;
+localparam SCREEN_6 = 4'b0110;
+localparam SCREEN_7 = 4'b0111;
+localparam SCREEN_8 = 4'b1000;
+localparam SCREEN_9 = 4'b1001;
+localparam SCREEN_10 = 4'b1010;
+localparam SCREEN_11 = 4'b1011;
+localparam SCREEN_12 = 4'b1011;
+localparam SCREEN_13 = 4'b1011;
 
 localparam BLACK = 16'h0000;
 
@@ -44,7 +46,10 @@ always @ (*) begin
     SCREEN_8: if (btnR) next_state = SCREEN_9;
     SCREEN_9: if (btnR) next_state = SCREEN_10;
     SCREEN_10: if (btnR) next_state = SCREEN_11;
-    SCREEN_11: if (btnR) next_state = SCREEN_1;
+    SCREEN_11: if (btnR) next_state = SCREEN_11;
+    SCREEN_12: if (btnR) next_state = SCREEN_12;
+    SCREEN_13: if (btnR) next_state = SCREEN_1;
+  endcase
   endcase
   if (~sw) begin
     next_state = IDLE;
@@ -62,6 +67,8 @@ wire [15:0] s8_oled_data;
 wire [15:0] s9_oled_data;
 wire [15:0] s10_oled_data;
 wire [15:0] s11_oled_data;
+wire [15:0] s12_oled_data;
+wire [15:0] s13_oled_data;
 
 Game_Screen_1 screen_1(x, y, s1_oled_data);
 Game_Screen_2 screen_2(x, y, s2_oled_data);
@@ -74,6 +81,8 @@ Game_Screen_8 screen_8(x, y, s8_oled_data);
 Game_Screen_9 screen_9(x, y, s9_oled_data);
 Game_Screen_10 screen_10(x, y, s10_oled_data);
 Game_Screen_11 screen_11(x, y, s11_oled_data);
+Game_Screen_12 screen_12(x, y, s12_oled_data);
+Game_Screen_13 screen_13(x, y, s13_oled_data);
 
 always @ (*) begin
   oled_data = BLACK;
@@ -89,6 +98,8 @@ always @ (*) begin
     SCREEN_9: oled_data = s9_oled_data;
     SCREEN_10: oled_data = s10_oled_data;
     SCREEN_11: oled_data = s11_oled_data;
+    SCREEN_12: oled_data = s12_oled_data;
+    SCREEN_13: oled_data = s13_oled_data;
   endcase
 end
 

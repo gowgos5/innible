@@ -106,11 +106,16 @@ localparam SKYBLUE = 16'h5FFF;
 
     //Display >>>
     wire arrow2 = ((x == 86) && (y == 57)) || ((x == 87) && (y == 58)) || ((x == 86) && (y == 59)) ||
-                 ((x == 89) && (y == 57)) || ((x == 90) && (y == 58)) || ((x == 89) && (y == 59)) ||
-                 ((x == 92) && (y == 57)) || ((x == 93) && (y == 58)) || ((x == 92) && (y == 59));   
+                  ((x == 89) && (y == 57)) || ((x == 90) && (y == 58)) || ((x == 89) && (y == 59)) ||
+                  ((x == 92) && (y == 57)) || ((x == 93) && (y == 58)) || ((x == 92) && (y == 59));   
 
     always @ (*) begin
-      oled_data = ORANGE;
-    end
-
+    oled_data = WHITE;
+        if (S1 || BUTTONS || ENTER || NEXT || GRAB_CHAIR) begin
+            oled_data = BLACK;
+        end
+        else if (arrow2) begin
+            oled_data = RED;
+        end
+    end 
 endmodule 

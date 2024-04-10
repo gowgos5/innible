@@ -18,7 +18,9 @@ localparam CYAN = 16'hF81F;
 localparam MAGENTA = 16'hF81F;
 localparam BROWN = 16'h8204;
 localparam SKYBLUE = 16'h5FFF;
-
+localparam LIGHTGREEN = 16'hAFE5;
+    
+    
     wire REPLAY = ((x == 10) && (y >= 18 && y <= 22)) || ((x >= 10 && x <= 12) && (y == 18)) || ((x == 13) && (y == 19)) || ((x >= 10 && x <= 12) && (y == 20)) || ((x == 12) && (y == 21)) || ((x == 13) && (y == 22)) ||
                   ((x == 15) && (y >= 18 && y <= 22)) || ((x >= 15 && x <= 18) && (y == 18)) || ((x >= 15 && x <= 17) && (y == 20)) || ((x >= 15 && x <= 18) && (y == 22)) ||
                   ((x >= 20 && x <= 22) && (y == 18)) || ((x == 23) && (y == 19)) || ((x >= 20 && x <= 22) && (y == 20)) || ((x == 20) && (y >= 18 && y <= 22)) ||
@@ -34,9 +36,15 @@ localparam SKYBLUE = 16'h5FFF;
                        ((x >= 32 && x <= 49) && (y >= 30 && y <= 45)) ||
                        ((x >= 51 && x <= 67) && (y >= 30 && y <= 45)) ||
                        ((x >= 69 && x <= 85) && (y >= 30 && y <= 45));
-
-always @ (*) begin
-  oled_data = SKYBLUE;
-end
-
+   
+    always @ (*) begin
+    oled_data = WHITE;
+        if (REPLAY || LOADING_BAR_OB1) begin
+            oled_data = BLACK;
+        end
+        //else if (LOADING_BAR1) begin
+        //    oled_data = LIGHTGREEN; 
+        //end
+    end 
+    
 endmodule

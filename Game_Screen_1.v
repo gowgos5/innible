@@ -70,8 +70,13 @@ localparam SKYBLUE = 16'h5FFF;
                   ((x == 92) && (y == 57)) || ((x == 93) && (y == 58)) || ((x == 92) && (y == 59));    
 
     always @ (*) begin
-      oled_data = GREEN;
-    end
-
+    oled_data = WHITE;
+        if (FLASHING_CHAIR || GAME_CONTROL || blink) begin
+            oled_data = BLACK;
+        end
+        else if (arrow1) begin
+            oled_data = RED;
+        end
+    end 
 endmodule
 

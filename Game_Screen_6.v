@@ -57,8 +57,17 @@ localparam SKYBLUE = 16'h5FFF;
                    ((x >= 84 && x< 88) && (y == 55)) || ((x == 86) && (y >= 55 && y <= 59)) ||
                    ((x == 90) && (y >= 55 && y <= 59)) || ((x == 91) && (y == 56)) || ((x == 92) && (y == 57)) || ((x == 93) && (y >= 55 && y <= 59));
 
-always @ (*) begin
-  oled_data = BLUE;
-end
+    always @ (*) begin
+    oled_data = WHITE;
+        if (Hand || pushbtn || PRESS || HOLD || ctr_btn) begin
+            oled_data = BLACK;
+        end
+        else if (pushbtnbar2) begin
+            oled_data = SKYBLUE;
+        end
+        else if (pushbtnbar1) begin
+            oled_data = BLUE;
+        end
+    end  
 
 endmodule

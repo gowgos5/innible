@@ -18,9 +18,8 @@ localparam CYAN = 16'hF81F;
 localparam MAGENTA = 16'hF81F;
 localparam BROWN = 16'h8204;
 localparam SKYBLUE = 16'h5FFF;    
-
-
-
+localparam LIGHTGREEN = 16'hAFE5;
+localparam DARKGREEN = 16'h632C;
     //Mic Test
     wire MIC_vLine = ((x == 27) && (y >= 34 && y <= 43)) || 
                      ((x == 28) && (y >= 32 && y <= 33)) ||
@@ -94,9 +93,19 @@ localparam SKYBLUE = 16'h5FFF;
                     ((x == 64) && (y == 39)) || ((x == 64) && (y == 42)) || ((x == 65) && (y >= 38 && y <= 43)) || ((x == 66) && (y == 38)) || ((x >= 66 && x <= 69) && (y == 37)) || ((x == 70) && (y == 38)) || ((x >=67 && x <= 69) && (y == 39)) || ((x == 69) && (y == 40)) || ((x == 70) && (y == 41)) || ((x == 69) && (y == 42)) || ((x >= 66 && x <= 68) && (y == 43)) || ((x >= 66 && x <= 68) && (y == 41)) || ((x == 66) && (y == 40)) ||
                     ((x == 72) && (y == 38)) || ((x == 73) && (y >= 37 && y <= 39)) || ((x >= 74 && x <= 78) && (y == 37)) || ((x == 79) && (y == 38)) || ((x == 78) && (y == 39)) || ((x == 77) && (y >= 39 && y <= 42)) || ((x == 76) && (y == 43)) || ((x >= 74 && x <= 75) && (y >= 40 && y <= 42));   
     
-always @ (*) begin
-  oled_data = YELLOW;
-end
+    always @ (*) begin
+    oled_data = WHITE;
+        if (MIC_vLine || MIC_TEST || MIC_Body) begin
+            oled_data = BLACK;
+        end
+        else if (color_Mic_LG) begin
+            oled_data = LIGHTGREEN;
+        end
+        else if (color_Mic_DG) begin
+            oled_data = DARKGREEN;
+        end
+    end  
+
 
 endmodule
 
