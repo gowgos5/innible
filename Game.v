@@ -87,7 +87,7 @@ Settings settings(x, y, settings_oled_data);
 Mic_Start mic_start(x, y, mic_start_oled_data);
 Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
-Record_Speak record_speak(x, y, record_volume, record_speak_oled_data);
+Record_Speak record_speak(x, y, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
 Game_Play game_play(x, y, game_play_oled_data);
 
