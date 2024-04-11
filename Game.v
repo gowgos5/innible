@@ -100,7 +100,7 @@ always @ (posedge clk_3hz) begin
                end
     RECORD_SPEAK: begin
                  record_cnt <= record_cnt + 9'd1;
-                 record_volume[i] <= volume;
+                 record_volume[0] <= volume;
                  for (i = 1; i < 16; i = i + 1) begin
                    record_volume[i] <= record_volume[i-1];
                  end
