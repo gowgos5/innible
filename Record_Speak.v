@@ -87,7 +87,7 @@ localparam SKYBLUE = 16'h5FFF;
 
     for (i = 0; i < 16; i = i + 1) begin  // time
       for (j = 0; j < 16; j = j + 1) begin // magnitude
-        if (volume[(i*16) +: 16] >= j && xrange[i] && yrange[j]) begin
+        if (volume[(i*5) +: 5] >= j && xrange[i] && yrange[j]) begin
           if (j <= 1) begin
             oled_data = BROWN;
           end else if (j <= 3) begin
