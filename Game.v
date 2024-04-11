@@ -29,16 +29,17 @@ localparam GAME_REPLAY = 4'b1111;
 
 localparam OLED_BLANK = 16'h0000;
 
+localparam GAME_PLAY_ACTIVE_MIN_CNT = 9'd100;
 localparam GAME_PLAY_TIMEOUT_CNT = 9'd300;
 
 wire clk_1hz;
-wire clk_2hz;
+wire clk_3hz;
 wire clk_10hz;
 wire clk_20hz;
 wire clk_100hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
-Slow_Clock #(.SLOW_CLOCK_FREQUENCY(2)) slow_clock_2_hz(clk, clk_2hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(3)) slow_clock_3_hz(clk, clk_3hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(10)) slow_clock_10_hz(clk, clk_10hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(20)) slow_clock_30_hz(clk, clk_20hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
@@ -49,12 +50,13 @@ reg settings_use_btnR;
 
 reg [8:0] record_cnt;
 reg [4:0] record_volume [15:0]; 
+reg [79:0] record_volume_flattened;
 reg [8:0] record_total_volume; 
 
 wire lfsr_init;
 wire [8:0] lfsr_seed;
-wire [8:0] lfsr_out;
 reg [8:0] lfsr_cnt = 9'd0;
+wire [8:0] lfsr_out;
 
 reg [2:0] game_start_cnt;
 
@@ -64,8 +66,8 @@ wire game_play_active;
 wire game_play_timeout;
 wire [8:0] game_play_score_cnt;
 
-assign lfsr_init = (next_state == GAME_START);
-assign lfsr_seed = lfsr_cnt ^ record_total_volume;
+assign lfsr_init = state == RECORD_SPEAK;
+assign lfsr_seed = record_cnt ^ record_total_volume ^ lfsr_cnt;
 
 LFSR lfsr(clk, lfsr_init, lfsr_seed, lfsr_out);
 
@@ -74,17 +76,27 @@ assign game_play_timeout = !(|game_play_timeout_cnt);
 assign game_play_score_cnt = GAME_PLAY_TIMEOUT_CNT - game_play_timeout_cnt;
 
 integer i;
+always @ (*) begin
+  record_total_volume = 9'd0;
+  for (i = 0; i < 16; i = i + 1) begin
+    record_total_volume = record_total_volume + record_volume[i];
+    record_volume_flattened[(i*5) +: 5] = record_volume[i];
+  end
+end
+
 always @ (posedge clk) begin
   btnR_pulse[0] <= btnR;
   btnR_pulse[1] <= btnR_pulse[0];
   btnR_pulse[2] <= btnR_pulse[0] & ~btnR_pulse[1];
+
+  lfsr_cnt <= lfsr_cnt + 9'd1;
 
   case (state)
     SETTINGS: settings_use_btnR <= btnR;
   endcase
 end
 
-always @ (posedge clk_2hz) begin
+always @ (posedge clk_3hz) begin
   case (state)
     RECORD_START: begin
                  record_cnt <= 9'd0;
@@ -103,11 +115,9 @@ always @ (posedge clk_2hz) begin
 end
 
 always @ (posedge clk_100hz) begin
-  lfsr_cnt <= lfsr_cnt + 9'd1;
-
   case (state)
     GAME_START: begin
-                  game_play_active_cnt <= lfsr_out < 9'd100 ? lfsr_out + 9'd100 : lfsr_out;
+                  game_play_active_cnt <= lfsr_out < GAME_PLAY_ACTIVE_MIN_CNT ? lfsr_out + GAME_PLAY_ACTIVE_MIN_CNT : lfsr_out;
                   game_play_timeout_cnt <= GAME_PLAY_TIMEOUT_CNT;
                 end
     GAME_PLAY: begin
@@ -145,7 +155,7 @@ Settings settings(x, y, settings_oled_data);
 Mic_Start mic_start(x, y, mic_start_oled_data);
 Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
-Record_Speak record_speak(x, y, record_speak_oled_data);
+Record_Speak record_speak(x, y, record_volume_flattened, record_speak_oled_data);
 Game_Start game_start(x, y, game_start_cnt, game_start_oled_data);
 Game_Play game_play(clk_20hz, x, y, game_play_active, game_play_oled_data);
 Game_End_1 game_end_1(x, y, game_play_score_cnt, game_end_1_oled_data);
@@ -193,16 +203,11 @@ always @ (*) begin
     GAME_START: if (game_start_cnt > 3'd4) next_state = GAME_PLAY;
     GAME_PLAY: begin
                  if (game_play_timeout) next_state = GAME_END_3;
-                 else if ((btnR && settings_use_btnR) || (btnL && !settings_use_btnR)) next_state = game_play_active ? GAME_END_2 : GAME_END_1; // TODO
+                 else if (btnL) next_state = game_play_active ? GAME_END_2 : GAME_END_1; // TODO
                end
   endcase
   if (~sw) begin
     next_state = IDLE;
-  end
-
-  record_total_volume = 9'd0;
-  for (i = 0; i < 16; i = i + 1) begin
-    record_total_volume = record_total_volume + record_volume[i];
   end
 end
 

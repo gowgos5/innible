@@ -1,6 +1,7 @@
 module Record_Speak(
   input [6:0] x,
   input [5:0] y,
+  input [79:0] volume,
   output reg [15:0] oled_data
 );
 
@@ -40,148 +41,74 @@ localparam SKYBLUE = 16'h5FFF;
                    ((x == 33) && (y >= 48 && y <= 52)) || ((x >= 33 && x <= 36) && (y == 48)) || ((x >= 33 && x <= 35) && (y == 50)) || ((x >= 33 && x <= 36) && (y == 52));    
     
     //Display Speaker Volume
-    wire xrange_c0 = (x >= 43 && x <= 44);
-    wire xrange_c1 = (x >= 46 && x <= 47);
-    wire xrange_c2 = (x >= 49 && x <= 50);
-    wire xrange_c3 = (x >= 52 && x <= 53);
-    wire xrange_c4 = (x >= 55 && x <= 56);
-    wire xrange_c5 = (x >= 58 && x <= 59);
-    wire xrange_c6 = (x >= 61 && x <= 62);
-    wire xrange_c7 = (x >= 64 && x <= 65);
-    wire xrange_c8 = (x >= 67 && x <= 68);
-    wire xrange_c9 = (x >= 70 && x <= 71);
-    wire xrange_c10 = (x >= 73 && x <= 74);
-    wire xrange_c11 = (x >= 76 && x <= 77);
-    wire xrange_c12 = (x >= 79 && x <= 80);
-    wire xrange_c13 = (x >= 82 && x <= 83);
-    wire xrange_c14 = (x >= 85 && x <= 86);
-    wire xrange_c15 = (x >= 88 && x <= 89);
+    wire xrange [15:0];
+    assign xrange[0] = (x >= 43 && x <= 44);
+    assign xrange[1] = (x >= 46 && x <= 47);
+    assign xrange[2] = (x >= 49 && x <= 50);
+    assign xrange[3] = (x >= 52 && x <= 53);
+    assign xrange[4] = (x >= 55 && x <= 56);
+    assign xrange[5] = (x >= 58 && x <= 59);
+    assign xrange[6] = (x >= 61 && x <= 62);
+    assign xrange[7] = (x >= 64 && x <= 65);
+    assign xrange[8] = (x >= 67 && x <= 68);
+    assign xrange[9] = (x >= 70 && x <= 71);
+    assign xrange[10] = (x >= 73 && x <= 74);
+    assign xrange[11] = (x >= 76 && x <= 77);
+    assign xrange[12] = (x >= 79 && x <= 80);
+    assign xrange[13] = (x >= 82 && x <= 83);
+    assign xrange[14] = (x >= 85 && x <= 86);
+    assign xrange[15] = (x >= 88 && x <= 89);
 
-    wire yrange_r0 = (y >= 51 && y <= 52); 
-    wire yrange_r1 = (y >= 48 && y <= 49);
-    wire yrange_r2 = (y >= 45 && y <= 46);
-    wire yrange_r3 = (y >= 42 && y <= 43);
-    wire yrange_r4 = (y >= 39 && y <= 40);
-    wire yrange_r5 = (y >= 36 && y <= 37);
-    wire yrange_r6 = (y >= 33 && y <= 34);
-    wire yrange_r7 = (y >= 30 && y <= 31);
-    wire yrange_r8 = (y >= 27 && y <= 28);
-    wire yrange_r9 = (y >= 24 && y <= 25);
-    wire yrange_r10 = (y >= 21 && y <= 22);
-    wire yrange_r11 = (y >= 18 && y <= 19);
-    wire yrange_r12 = (y >= 15 && y <= 16);
-    wire yrange_r13 = (y >= 12 && y <= 13);
-    wire yrange_r14 = (y >= 9 && y <= 10);
-    wire yrange_r15 = (y >= 6 && y <= 7);
+    wire yrange [15:0];
+    assign yrange[0] = (y >= 51 && y <= 52); 
+    assign yrange[1] = (y >= 48 && y <= 49);
+    assign yrange[2] = (y >= 45 && y <= 46);
+    assign yrange[3] = (y >= 42 && y <= 43);
+    assign yrange[4] = (y >= 39 && y <= 40);
+    assign yrange[5] = (y >= 36 && y <= 37);
+    assign yrange[6] = (y >= 33 && y <= 34);
+    assign yrange[7] = (y >= 30 && y <= 31);
+    assign yrange[8] = (y >= 27 && y <= 28);
+    assign yrange[9] = (y >= 24 && y <= 25);
+    assign yrange[10] = (y >= 21 && y <= 22);
+    assign yrange[11] = (y >= 18 && y <= 19);
+    assign yrange[12] = (y >= 15 && y <= 16);
+    assign yrange[13] = (y >= 12 && y <= 13);
+    assign yrange[14] = (y >= 9 && y <= 10);
+    assign yrange[15] = (y >= 6 && y <= 7);
 
-    wire row0 = ((xrange_c0) && (yrange_r0)) || ((xrange_c1) && (yrange_r0)) || ((xrange_c2) && (yrange_r0)) || ((xrange_c3) && (yrange_r0)) ||
-                ((xrange_c4) && (yrange_r0)) || ((xrange_c5) && (yrange_r0)) || ((xrange_c6) && (yrange_r0)) || ((xrange_c7) && (yrange_r0)) ||
-                ((xrange_c8) && (yrange_r0)) || ((xrange_c9) && (yrange_r0)) || ((xrange_c10) && (yrange_r0)) || ((xrange_c11) && (yrange_r0)) ||
-                ((xrange_c12) && (yrange_r0)) || ((xrange_c13) && (yrange_r0)) || ((xrange_c14) && (yrange_r0)) || ((xrange_c15) && (yrange_r0));     
-
-    wire row1 = ((xrange_c0) && (yrange_r1)) || ((xrange_c1) && (yrange_r1)) || ((xrange_c2) && (yrange_r1)) || ((xrange_c3) && (yrange_r1)) ||
-                ((xrange_c4) && (yrange_r1)) || ((xrange_c5) && (yrange_r1)) || ((xrange_c6) && (yrange_r1)) || ((xrange_c7) && (yrange_r1)) ||
-                ((xrange_c8) && (yrange_r1)) || ((xrange_c9) && (yrange_r1)) || ((xrange_c10) && (yrange_r1)) || ((xrange_c11) && (yrange_r1)) ||
-                ((xrange_c12) && (yrange_r1)) || ((xrange_c13) && (yrange_r1)) || ((xrange_c14) && (yrange_r1)) || ((xrange_c15) && (yrange_r1));     
-
-    wire row2 = ((xrange_c0) && (yrange_r2)) || ((xrange_c1) && (yrange_r2)) || ((xrange_c2) && (yrange_r2)) || ((xrange_c3) && (yrange_r2)) ||
-                ((xrange_c4) && (yrange_r2)) || ((xrange_c5) && (yrange_r2)) || ((xrange_c6) && (yrange_r2)) || ((xrange_c7) && (yrange_r2)) ||
-                ((xrange_c8) && (yrange_r2)) || ((xrange_c9) && (yrange_r2)) || ((xrange_c10) && (yrange_r2)) || ((xrange_c11) && (yrange_r2)) ||
-                ((xrange_c12) && (yrange_r2)) || ((xrange_c13) && (yrange_r2)) || ((xrange_c14) && (yrange_r2)) || ((xrange_c15) && (yrange_r2));     
-
-    wire row3 = ((xrange_c0) && (yrange_r3)) || ((xrange_c1) && (yrange_r3)) || ((xrange_c2) && (yrange_r3)) || ((xrange_c3) && (yrange_r3)) ||
-                ((xrange_c4) && (yrange_r3)) || ((xrange_c5) && (yrange_r3)) || ((xrange_c6) && (yrange_r3)) || ((xrange_c7) && (yrange_r3)) ||
-                ((xrange_c8) && (yrange_r3)) || ((xrange_c9) && (yrange_r3)) || ((xrange_c10) && (yrange_r3)) || ((xrange_c11) && (yrange_r3)) ||
-                ((xrange_c12) && (yrange_r3)) || ((xrange_c13) && (yrange_r3)) || ((xrange_c14) && (yrange_r3)) || ((xrange_c15) && (yrange_r3));     
-
-    wire row4 = ((xrange_c0) && (yrange_r4)) || ((xrange_c1) && (yrange_r4)) || ((xrange_c2) && (yrange_r4)) || ((xrange_c3) && (yrange_r4)) ||
-                ((xrange_c4) && (yrange_r4)) || ((xrange_c5) && (yrange_r4)) || ((xrange_c6) && (yrange_r4)) || ((xrange_c7) && (yrange_r4)) ||
-                ((xrange_c8) && (yrange_r4)) || ((xrange_c9) && (yrange_r4)) || ((xrange_c10) && (yrange_r4)) || ((xrange_c11) && (yrange_r4)) ||
-                ((xrange_c12) && (yrange_r4)) || ((xrange_c13) && (yrange_r4)) || ((xrange_c14) && (yrange_r4)) || ((xrange_c15) && (yrange_r4));     
-
-    wire row5 = ((xrange_c0) && (yrange_r5)) || ((xrange_c1) && (yrange_r5)) || ((xrange_c2) && (yrange_r5)) || ((xrange_c3) && (yrange_r5)) ||
-                ((xrange_c4) && (yrange_r5)) || ((xrange_c5) && (yrange_r5)) || ((xrange_c6) && (yrange_r5)) || ((xrange_c7) && (yrange_r5)) ||
-                ((xrange_c8) && (yrange_r5)) || ((xrange_c9) && (yrange_r5)) || ((xrange_c10) && (yrange_r5)) || ((xrange_c11) && (yrange_r5)) ||
-                ((xrange_c12) && (yrange_r5)) || ((xrange_c13) && (yrange_r5)) || ((xrange_c14) && (yrange_r5)) || ((xrange_c15) && (yrange_r5));     
-
-    wire row6 = ((xrange_c0) && (yrange_r6)) || ((xrange_c1) && (yrange_r6)) || ((xrange_c2) && (yrange_r6)) || ((xrange_c3) && (yrange_r6)) ||
-                ((xrange_c4) && (yrange_r6)) || ((xrange_c5) && (yrange_r6)) || ((xrange_c6) && (yrange_r6)) || ((xrange_c7) && (yrange_r6)) ||
-                ((xrange_c8) && (yrange_r6)) || ((xrange_c9) && (yrange_r6)) || ((xrange_c10) && (yrange_r6)) || ((xrange_c11) && (yrange_r6)) ||
-                ((xrange_c12) && (yrange_r6)) || ((xrange_c13) && (yrange_r6)) || ((xrange_c14) && (yrange_r6)) || ((xrange_c15) && (yrange_r6));     
-
-    wire row7 = ((xrange_c0) && (yrange_r7)) || ((xrange_c1) && (yrange_r7)) || ((xrange_c2) && (yrange_r7)) || ((xrange_c3) && (yrange_r7)) ||
-                ((xrange_c4) && (yrange_r7)) || ((xrange_c5) && (yrange_r7)) || ((xrange_c6) && (yrange_r7)) || ((xrange_c7) && (yrange_r7)) ||
-                ((xrange_c8) && (yrange_r7)) || ((xrange_c9) && (yrange_r7)) || ((xrange_c10) && (yrange_r7)) || ((xrange_c11) && (yrange_r7)) ||
-                ((xrange_c12) && (yrange_r7)) || ((xrange_c13) && (yrange_r7)) || ((xrange_c14) && (yrange_r7)) || ((xrange_c15) && (yrange_r7));     
-
-    wire row8 = ((xrange_c0) && (yrange_r8)) || ((xrange_c1) && (yrange_r8)) || ((xrange_c2) && (yrange_r8)) || ((xrange_c3) && (yrange_r8)) ||
-                ((xrange_c4) && (yrange_r8)) || ((xrange_c5) && (yrange_r8)) || ((xrange_c6) && (yrange_r8)) || ((xrange_c7) && (yrange_r8)) ||
-                ((xrange_c8) && (yrange_r8)) || ((xrange_c9) && (yrange_r8)) || ((xrange_c10) && (yrange_r8)) || ((xrange_c11) && (yrange_r8)) ||
-                ((xrange_c12) && (yrange_r8)) || ((xrange_c13) && (yrange_r8)) || ((xrange_c14) && (yrange_r8)) || ((xrange_c15) && (yrange_r8));     
-
-    wire row9 = ((xrange_c0) && (yrange_r9)) || ((xrange_c1) && (yrange_r9)) || ((xrange_c2) && (yrange_r9)) || ((xrange_c3) && (yrange_r9)) ||
-                ((xrange_c4) && (yrange_r9)) || ((xrange_c5) && (yrange_r9)) || ((xrange_c6) && (yrange_r9)) || ((xrange_c7) && (yrange_r9)) ||
-                ((xrange_c8) && (yrange_r9)) || ((xrange_c9) && (yrange_r9)) || ((xrange_c10) && (yrange_r9)) || ((xrange_c11) && (yrange_r9)) ||
-                ((xrange_c12) && (yrange_r9)) || ((xrange_c13) && (yrange_r9)) || ((xrange_c14) && (yrange_r9)) || ((xrange_c15) && (yrange_r9));     
-
-    wire row10 = ((xrange_c0) && (yrange_r10)) || ((xrange_c1) && (yrange_r10)) || ((xrange_c2) && (yrange_r10)) || ((xrange_c3) && (yrange_r10)) ||
-                ((xrange_c4) && (yrange_r10)) || ((xrange_c5) && (yrange_r10)) || ((xrange_c6) && (yrange_r10)) || ((xrange_c7) && (yrange_r10)) ||
-                ((xrange_c8) && (yrange_r10)) || ((xrange_c9) && (yrange_r10)) || ((xrange_c10) && (yrange_r10)) || ((xrange_c11) && (yrange_r10)) ||
-                ((xrange_c12) && (yrange_r10)) || ((xrange_c13) && (yrange_r10)) || ((xrange_c14) && (yrange_r10)) || ((xrange_c15) && (yrange_r10));     
-
-    wire row11 = ((xrange_c0) && (yrange_r11)) || ((xrange_c1) && (yrange_r11)) || ((xrange_c2) && (yrange_r11)) || ((xrange_c3) && (yrange_r11)) ||
-                ((xrange_c4) && (yrange_r11)) || ((xrange_c5) && (yrange_r11)) || ((xrange_c6) && (yrange_r11)) || ((xrange_c7) && (yrange_r11)) ||
-                ((xrange_c8) && (yrange_r11)) || ((xrange_c9) && (yrange_r11)) || ((xrange_c10) && (yrange_r11)) || ((xrange_c11) && (yrange_r11)) ||
-                ((xrange_c12) && (yrange_r11)) || ((xrange_c13) && (yrange_r11)) || ((xrange_c14) && (yrange_r11)) || ((xrange_c15) && (yrange_r11));     
-
-    wire row12 = ((xrange_c0) && (yrange_r12)) || ((xrange_c1) && (yrange_r12)) || ((xrange_c2) && (yrange_r12)) || ((xrange_c3) && (yrange_r12)) ||
-                ((xrange_c4) && (yrange_r12)) || ((xrange_c5) && (yrange_r12)) || ((xrange_c6) && (yrange_r12)) || ((xrange_c7) && (yrange_r12)) ||
-                ((xrange_c8) && (yrange_r12)) || ((xrange_c9) && (yrange_r12)) || ((xrange_c10) && (yrange_r12)) || ((xrange_c11) && (yrange_r12)) ||
-                ((xrange_c12) && (yrange_r12)) || ((xrange_c13) && (yrange_r12)) || ((xrange_c14) && (yrange_r12)) || ((xrange_c15) && (yrange_r12));     
-
-    wire row13 = ((xrange_c0) && (yrange_r13)) || ((xrange_c1) && (yrange_r13)) || ((xrange_c2) && (yrange_r13)) || ((xrange_c3) && (yrange_r13)) ||
-                ((xrange_c4) && (yrange_r13)) || ((xrange_c5) && (yrange_r13)) || ((xrange_c6) && (yrange_r13)) || ((xrange_c7) && (yrange_r13)) ||
-                ((xrange_c8) && (yrange_r13)) || ((xrange_c9) && (yrange_r13)) || ((xrange_c10) && (yrange_r13)) || ((xrange_c11) && (yrange_r13)) ||
-                ((xrange_c12) && (yrange_r13)) || ((xrange_c13) && (yrange_r13)) || ((xrange_c14) && (yrange_r13)) || ((xrange_c15) && (yrange_r13));     
-
-    wire row14 = ((xrange_c0) && (yrange_r14)) || ((xrange_c1) && (yrange_r14)) || ((xrange_c2) && (yrange_r14)) || ((xrange_c3) && (yrange_r14)) ||
-                ((xrange_c4) && (yrange_r14)) || ((xrange_c5) && (yrange_r14)) || ((xrange_c6) && (yrange_r14)) || ((xrange_c7) && (yrange_r14)) ||
-                ((xrange_c8) && (yrange_r14)) || ((xrange_c9) && (yrange_r14)) || ((xrange_c10) && (yrange_r14)) || ((xrange_c11) && (yrange_r14)) ||
-                ((xrange_c12) && (yrange_r14)) || ((xrange_c13) && (yrange_r14)) || ((xrange_c14) && (yrange_r14)) || ((xrange_c15) && (yrange_r14));     
-
-    wire row15 = ((xrange_c0) && (yrange_r15)) || ((xrange_c1) && (yrange_r15)) || ((xrange_c2) && (yrange_r15)) || ((xrange_c3) && (yrange_r15)) ||
-                ((xrange_c4) && (yrange_r15)) || ((xrange_c5) && (yrange_r15)) || ((xrange_c6) && (yrange_r15)) || ((xrange_c7) && (yrange_r15)) ||
-                ((xrange_c8) && (yrange_r15)) || ((xrange_c9) && (yrange_r15)) || ((xrange_c10) && (yrange_r15)) || ((xrange_c11) && (yrange_r15)) ||
-                ((xrange_c12) && (yrange_r15)) || ((xrange_c13) && (yrange_r15)) || ((xrange_c14) && (yrange_r15)) || ((xrange_c15) && (yrange_r15));     
-
-    always @ (*) begin
+  integer i;
+  integer j;
+  always @ (*) begin
     oled_data = WHITE;
-        if (SPEAK || AND || RELEASE) begin
-            oled_data = BLACK;
-        end
-        else if (row0 || row1) begin
+    if (SPEAK || AND || RELEASE) begin
+        oled_data = BLACK;
+    end
+
+    for (i = 0; i < 16; i = i + 1) begin  // time
+      for (j = 0; j < 16; j = j + 1) begin // magnitude
+        if (volume[(i*16) +: 16] >= j && xrange[i] && yrange[j]) begin
+          if (j <= 1) begin
             oled_data = BROWN;
-        end
-        else if (row2 || row3) begin
+          end else if (j <= 3) begin
             oled_data = RED;
-        end
-        else if (row4 || row5) begin
+          end else if (j <= 5) begin
             oled_data = YELLOW;
-        end
-        else if (row6 || row7) begin
+          end else if (j <= 7) begin
             oled_data = ORANGE;
-        end
-        else if (row8 || row9) begin
+          end else if (j <= 9) begin
             oled_data = GREEN;
-        end
-        else if (row10 || row11) begin
+          end else if (j <= 11) begin
             oled_data = SKYBLUE;
-        end
-        else if (row12 || row13) begin
+          end else if (j <= 13) begin
             oled_data = BLUE;
-        end
-        else if (row14 || row15) begin
+          end else begin
             oled_data = PURPLE;
-        end       
-    end  
+          end
+        end
+      end
+    end
+  end
+
 endmodule
+
