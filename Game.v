@@ -46,8 +46,6 @@ Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
 
 reg btnR_pulse [2:0];
 
-reg settings_use_btnR;
-
 reg [8:0] record_cnt;
 reg [4:0] record_volume [15:0]; 
 reg [79:0] record_volume_flattened;
@@ -90,10 +88,6 @@ always @ (posedge clk) begin
   btnR_pulse[2] <= btnR_pulse[0] & ~btnR_pulse[1];
 
   lfsr_cnt <= lfsr_cnt + 9'd1;
-
-  case (state)
-    SETTINGS: settings_use_btnR <= btnR;
-  endcase
 end
 
 always @ (posedge clk_3hz) begin
@@ -136,8 +130,6 @@ end
 
 wire [15:0] title_oled_data;
 wire [15:0] controls_1_oled_data;
-wire [15:0] controls_2_oled_data;
-wire [15:0] settings_oled_data;
 wire [15:0] mic_start_oled_data;
 wire [15:0] mic_volume_oled_data;
 wire [15:0] record_start_oled_data;
@@ -150,8 +142,6 @@ wire [15:0] game_end_3_oled_data;
 
 Title title(x, y, title_oled_data);
 Controls_1 controls_1(x, y, controls_1_oled_data);
-Controls_2 controls_2(x, y, controls_2_oled_data);
-Settings settings(x, y, settings_oled_data);
 Mic_Start mic_start(x, y, mic_start_oled_data);
 Mic_Volume mic_volume(x, y, theme_sw, volume, mic_volume_oled_data);
 Record_Start record_start(x, y, record_start_oled_data);
@@ -167,8 +157,6 @@ always @ (*) begin
   case (state)
     TITLE: oled_data = title_oled_data;
     CONTROLS_1: oled_data = controls_1_oled_data;
-    CONTROLS_2: oled_data = controls_2_oled_data;
-    SETTINGS: oled_data = settings_oled_data;
     MIC_START: oled_data = mic_start_oled_data;
     MIC_VOLUME: oled_data = mic_volume_oled_data;
     RECORD_START: oled_data = record_start_oled_data;
