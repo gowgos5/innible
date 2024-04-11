@@ -33,13 +33,13 @@ localparam GAME_PLAY_ACTIVE_MIN_CNT = 9'd100;
 localparam GAME_PLAY_TIMEOUT_CNT = 9'd300;
 
 wire clk_1hz;
-wire clk_3hz;
+wire clk_6hz;
 wire clk_10hz;
 wire clk_20hz;
 wire clk_100hz;
 
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(1)) slow_clock_1_hz(clk, clk_1hz);
-Slow_Clock #(.SLOW_CLOCK_FREQUENCY(3)) slow_clock_3_hz(clk, clk_3hz);
+Slow_Clock #(.SLOW_CLOCK_FREQUENCY(6)) slow_clock_6_hz(clk, clk_6hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(10)) slow_clock_10_hz(clk, clk_10hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(20)) slow_clock_30_hz(clk, clk_20hz);
 Slow_Clock #(.SLOW_CLOCK_FREQUENCY(100)) slow_clock_100_hz(clk, clk_100hz);
@@ -90,7 +90,7 @@ always @ (posedge clk) begin
   lfsr_cnt <= lfsr_cnt + 9'd1;
 end
 
-always @ (posedge clk_3hz) begin
+always @ (posedge clk_6hz) begin
   case (state)
     RECORD_START: begin
                  record_cnt <= 9'd0;
